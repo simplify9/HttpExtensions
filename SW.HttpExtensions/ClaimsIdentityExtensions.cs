@@ -18,6 +18,7 @@ namespace SW.HttpExtensions
             if (key == null) return null;
             if (issuer == null) return null;
             if (audience == null) return null;
+            if (!claimsIdentity.IsAuthenticated) return null;
 
             var td = new SecurityTokenDescriptor
             {

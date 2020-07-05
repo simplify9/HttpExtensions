@@ -1,20 +1,14 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+# SW.HttpExtensions
+[![Build Status](https://dev.azure.com/simplify9/Github%20Pipelines/_apis/build/status/simplify9.HttpExtensions?branchName=master)]
+| **Package**       | **Version** |
+| :----------------:|:----------------------:|
+| ``SimplyWorks.HttpExtensions``|![Nuget](https://img.shields.io/nuget/v/SimplyWorks.HttpExtensions?style=for-the-badge)|
+[SW.HttpExtensions](https://www.nuget.org/packages/SimplyWorks.HttpExtensions/) is a lightweight set of extensions made for abstracting HTTP tasks. Supports JavaScript servers. 
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+- **HttpContent Extensions** automates token-making. 
+- **HttpClientExtensions** calls on the POST client. 
+- **HttpClientFactoryExtensions** creates a client to pass information and pass it the same URL, injecting this information into th *HttpClient*, defaulting to null. 
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
-
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+## Getting support 👷
+If you encounter any bugs, don't hesitate to submit an [issue](https://github.com/simplify9/DeeBee/issues). We'll get back to you promptly!

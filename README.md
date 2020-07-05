@@ -4,6 +4,7 @@
 | **Package**       | **Version** |
 | :----------------:|:----------------------:|
 | ``SimplyWorks.HttpExtensions``|![Nuget](https://img.shields.io/nuget/v/SimplyWorks.HttpExtensions?style=for-the-badge)|
+
 [SW.HttpExtensions](https://www.nuget.org/packages/SimplyWorks.HttpExtensions/) is a lightweight set of extensions made for abstracting HTTP tasks. Supports JavaScript servers. 
 
 - **HttpContent Extensions** automates token-making. 

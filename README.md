@@ -1,20 +1,24 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+# SW.HttpExtensions
+[![Build Status](https://dev.azure.com/simplify9/Github%20Pipelines/_apis/build/status/simplify9.HttpExtensions?branchName=master)]
+| **Package**       | **Version** |
+| :----------------:|:----------------------:|
+| ``SimplyWorks.HttpExtensions``|![Nuget](https://img.shields.io/nuget/v/SimplyWorks.HttpExtensions?style=for-the-badge)|
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+[SW.HttpExtensions](https://www.nuget.org/packages/SimplyWorks.HttpExtensions/) is a lightweight set of extensions made for abstracting HTTP tasks. Supports JavaScript servers. 
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+- **HttpContent Extensions**: JSON response casting.
+- **HttpClientExtensions**: POST JSON object streamlining. 
+- **HttpClientFactoryExtensions**: Streamlining authorization and base address initialization. 
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+# HttpContent Extensions
+- Adds a method `ReadAsAsync` to cast JSON result into a type passed as a generic argument.
+
+# HttpClientExtensions
+- Adds a `PostAsync` function that serializes an object `payload` into a JSON string.
+
+# HttpClientFactoryExtensions
+- Adds Auth Token (*JWT*) initializations and BaseAddress in `HttpClient` creation overload.
+
+## Getting support 👷
+If you encounter any bugs, don't hesitate to submit an [issue](https://github.com/simplify9/HttpExtensions/issues). We'll get back to you promptly!

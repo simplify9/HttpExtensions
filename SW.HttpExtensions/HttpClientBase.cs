@@ -17,6 +17,7 @@ namespace SW.HttpExtensions
             HttpClient = httpClient;
             RequestContextManager = requestContextManager;
             Options = options;
+            
         }
 
         protected HttpClient HttpClient { get; }
@@ -30,10 +31,9 @@ namespace SW.HttpExtensions
 
         protected async Task AddJwt()
         {
-
             var user = (await RequestContextManager.GetCurrentContext()).User;
 
-            var jwt = ((ClaimsIdentity)user.Identity).GenerateJwt(Options.Token.Key, Options.Token.Issuer, Options.Token.Audience);
+            var jwt = Options.Token.WriteJwt((ClaimsIdentity)user.Identity);
 
             if (jwt != null)
                 HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);

@@ -22,5 +22,12 @@ namespace SW.HttpExtensions
                 throw new Exception($"Error connecting to: {client.BaseAddress}", ex);
             }
         }
+
+        async public static Task<TResult> PostAsync<TResult>(this HttpClient client, string url, object payload)
+        {
+            var httpResponseMessage = await client.PostAsync(url, payload);
+            httpResponseMessage.EnsureSuccessStatusCode();
+            return await httpResponseMessage.Content.ReadAsAsync<TResult>();
+        }
     }
 }

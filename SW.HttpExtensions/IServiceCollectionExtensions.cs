@@ -9,8 +9,8 @@ namespace SW.HttpExtensions
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddHttpClient<TInterface, TImplementation, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
-            where TOptions : HttpClientOptionsBase, new()
+        public static IServiceCollection AddApiClient<TInterface, TImplementation, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
+            where TOptions : ApiClientOptionsBase, new()
             where TImplementation : class, TInterface
             where TInterface : class
         {

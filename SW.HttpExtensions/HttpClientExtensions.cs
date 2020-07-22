@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
-
 using System.Threading.Tasks;
 
 namespace SW.HttpExtensions
@@ -26,6 +24,13 @@ namespace SW.HttpExtensions
         async public static Task<TResult> PostAsync<TResult>(this HttpClient client, string url, object payload)
         {
             var httpResponseMessage = await client.PostAsync(url, payload);
+            httpResponseMessage.EnsureSuccessStatusCode();
+            return await httpResponseMessage.Content.ReadAsAsync<TResult>();
+        }
+
+        async public static Task<TResult> GetAsync<TResult>(this HttpClient client, string url)
+        {
+            var httpResponseMessage = await client.GetAsync(url);
             httpResponseMessage.EnsureSuccessStatusCode();
             return await httpResponseMessage.Content.ReadAsAsync<TResult>();
         }

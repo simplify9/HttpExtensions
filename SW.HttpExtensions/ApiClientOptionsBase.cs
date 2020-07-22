@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SW.HttpExtensions
 {
-    public abstract class HttpClientOptionsBase
+    public abstract class ApiClientOptionsBase
     {
-        protected HttpClientOptionsBase()
+        protected ApiClientOptionsBase()
         {
             Token = new JwtTokenParameters();
             ApiKey = new ApiKeyParameters();

@@ -9,6 +9,22 @@ namespace SW.HttpExtensions
 {
     public static class IServiceCollectionExtensions
     {
+
+        public static IServiceCollection AddJwtTokenParameters(this IServiceCollection serviceCollection, Action<JwtTokenParameters> configure = null)
+        {
+            var jwtTokenParameters = new JwtTokenParameters();
+            if (configure != null) configure.Invoke(jwtTokenParameters);
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
+            configuration.GetSection(JwtTokenParameters.ConfigurationSection).Bind(jwtTokenParameters);
+
+            serviceCollection.AddSingleton(jwtTokenParameters);
+
+            return serviceCollection;
+        }
+
         public static IServiceCollection AddApiClient<TInterface, TImplementation, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
             where TOptions : ApiClientOptionsBase, new()
             where TImplementation : class, TInterface
@@ -24,7 +40,7 @@ namespace SW.HttpExtensions
             configuration.GetSection(clientOptions.ConfigurationSection).Bind(clientOptions);
 
             if (!clientOptions.Token.IsValid())
-                configuration.GetSection("Token").Bind(clientOptions.Token);
+                configuration.GetSection(JwtTokenParameters.ConfigurationSection).Bind(clientOptions.Token);
 
             serviceCollection.AddSingleton(clientOptions);
 

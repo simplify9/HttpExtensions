@@ -16,5 +16,6 @@ namespace SW.HttpExtensions
         public string BaseUrl { get; set; }
         public JwtTokenParameters Token { get; set; }
         public ApiKeyParameters ApiKey { get; set; }
+        public IDictionary<string, string> MockData { get; set; }
     }
 }

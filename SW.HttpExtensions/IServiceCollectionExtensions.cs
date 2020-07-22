@@ -25,9 +25,10 @@ namespace SW.HttpExtensions
             return serviceCollection;
         }
 
-        public static IServiceCollection AddApiClientMock<TInterface, TMockImplementation, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
+        public static IServiceCollection AddApiClient<TInterface, TImplementation, TImplementationMock, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
             where TOptions : ApiClientOptionsBase, new()
-            where TMockImplementation : class, TInterface
+            where TImplementationMock : class, TInterface
+            where TImplementation : class, TInterface
             where TInterface : class
         {
             var clientOptions = new TOptions();
@@ -44,7 +45,14 @@ namespace SW.HttpExtensions
 
             serviceCollection.AddSingleton(clientOptions);
 
-            serviceCollection.AddTransient<TInterface, TMockImplementation>();
+            if (clientOptions.Mock)
+                serviceCollection.AddTransient<TInterface, TImplementationMock>();
+
+            else
+                serviceCollection.AddHttpClient<TInterface, TImplementation>(httpClient =>
+                {
+                    httpClient.BaseAddress = new Uri(clientOptions.BaseUrl);
+                });
 
             return serviceCollection;
         }

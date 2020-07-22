@@ -14,6 +14,7 @@ namespace SW.HttpExtensions
 
         public abstract string ConfigurationSection { get; }
         public string BaseUrl { get; set; }
+        public bool Mock { get; set; }
         public JwtTokenParameters Token { get; set; }
         public ApiKeyParameters ApiKey { get; set; }
         public IDictionary<string, string> MockData { get; set; }

@@ -25,6 +25,30 @@ namespace SW.HttpExtensions
             return serviceCollection;
         }
 
+        public static IServiceCollection AddApiClientMock<TInterface, TMockImplementation, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
+            where TOptions : ApiClientOptionsBase, new()
+            where TMockImplementation : class, TInterface
+            where TInterface : class
+        {
+            var clientOptions = new TOptions();
+
+            if (configure != null) configure.Invoke(clientOptions);
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
+            configuration.GetSection(clientOptions.ConfigurationSection).Bind(clientOptions);
+
+            if (!clientOptions.Token.IsValid())
+                configuration.GetSection(JwtTokenParameters.ConfigurationSection).Bind(clientOptions.Token);
+
+            serviceCollection.AddSingleton(clientOptions);
+
+            serviceCollection.AddTransient<TInterface, TMockImplementation>();
+
+            return serviceCollection;
+        }
+
         public static IServiceCollection AddApiClient<TInterface, TImplementation, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
             where TOptions : ApiClientOptionsBase, new()
             where TImplementation : class, TInterface

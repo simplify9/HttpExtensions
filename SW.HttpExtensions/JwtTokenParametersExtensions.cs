@@ -11,7 +11,7 @@ namespace SW.HttpExtensions
     {
         public static string WriteJwt(this JwtTokenParameters jwtTokenParameters, ClaimsIdentity claimsIdentity)
         {
-            if (!jwtTokenParameters.IsValid()) return null;
+            if (!jwtTokenParameters.IsValid) return null;
 
             var td = new SecurityTokenDescriptor
             {
@@ -29,7 +29,7 @@ namespace SW.HttpExtensions
 
         public static ClaimsPrincipal ReadJwt(this JwtTokenParameters jwtTokenParameters, string jwt)
         {
-            if (!jwtTokenParameters.IsValid()) return null;
+            if (!jwtTokenParameters.IsValid) return null;
 
             var tokenValidationParameters = new TokenValidationParameters()
             {

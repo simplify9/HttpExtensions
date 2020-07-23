@@ -31,19 +31,7 @@ namespace SW.HttpExtensions
             where TImplementation : class, TInterface
             where TInterface : class
         {
-            var clientOptions = new TOptions();
-
-            if (configure != null) configure.Invoke(clientOptions);
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-
-            configuration.GetSection(clientOptions.ConfigurationSection).Bind(clientOptions);
-
-            if (!clientOptions.Token.IsValid())
-                configuration.GetSection(JwtTokenParameters.ConfigurationSection).Bind(clientOptions.Token);
-
-            serviceCollection.AddSingleton(clientOptions);
+            var clientOptions = serviceCollection.AddApiClientInternal(configure);
 
             if (clientOptions.Mock)
                 serviceCollection.AddTransient<TInterface, TImplementationMock>();
@@ -62,6 +50,20 @@ namespace SW.HttpExtensions
             where TImplementation : class, TInterface
             where TInterface : class
         {
+
+            var clientOptions = serviceCollection.AddApiClientInternal(configure);
+
+            serviceCollection.AddHttpClient<TInterface, TImplementation>(httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(clientOptions.BaseUrl);
+            });
+
+            return serviceCollection;
+        }
+
+        private static TOptions AddApiClientInternal<TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
+            where TOptions : ApiClientOptionsBase, new()
+        {
             var clientOptions = new TOptions();
 
             if (configure != null) configure.Invoke(clientOptions);
@@ -71,17 +73,12 @@ namespace SW.HttpExtensions
 
             configuration.GetSection(clientOptions.ConfigurationSection).Bind(clientOptions);
 
-            if (!clientOptions.Token.IsValid())
+            if (!clientOptions.Token.IsValid)
                 configuration.GetSection(JwtTokenParameters.ConfigurationSection).Bind(clientOptions.Token);
 
             serviceCollection.AddSingleton(clientOptions);
 
-            serviceCollection.AddHttpClient<TInterface, TImplementation>(httpClient =>
-            {
-                httpClient.BaseAddress = new Uri(clientOptions.BaseUrl);
-            });
-
-            return serviceCollection;
+            return clientOptions;
         }
     }
 }

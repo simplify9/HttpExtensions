@@ -13,16 +13,17 @@ namespace SW.HttpExtensions
 {
     public abstract class ApiClientBase<TApiClientOptions> where TApiClientOptions : ApiClientOptionsBase
     {
-        protected ApiClientBase(HttpClient httpClient, RequestContextManager requestContextManager, TApiClientOptions options)
+        private readonly RequestContext requestContext;
+
+        protected ApiClientBase(HttpClient httpClient, RequestContext requestContext, TApiClientOptions options)
         {
             HttpClient = httpClient;
-            RequestContextManager = requestContextManager;
+            this.requestContext = requestContext;
             Options = options;
 
         }
 
         protected HttpClient HttpClient { get; }
-        protected RequestContextManager RequestContextManager { get; }
         protected TApiClientOptions Options { get; }
 
         protected void AddApiKey()
@@ -30,9 +31,9 @@ namespace SW.HttpExtensions
             HttpClient.DefaultRequestHeaders.Add(Options.ApiKey.Name, Options.ApiKey.Value);
         }
 
-        protected async Task AddJwt()
+        protected void AddJwt()
         {
-            var user = (await RequestContextManager.GetCurrentContext()).User;
+            var user = requestContext.User;
 
             var jwt = Options.Token.WriteJwt((ClaimsIdentity)user.Identity);
 
@@ -42,36 +43,36 @@ namespace SW.HttpExtensions
 
         async public Task<HttpResponseMessage> PostAsync(string url, object payload, ApiHeaderOptions httpOperationHeaderOptions = ApiHeaderOptions.None)
         {
-            await PrepareHeaderOptions(httpOperationHeaderOptions);
+            PrepareHeaderOptions(httpOperationHeaderOptions);
             return await HttpClient.PostAsync(url, payload);
         }
 
         async public Task<TResult> PostAsync<TResult>(string url, object payload, ApiHeaderOptions httpOperationHeaderOptions = ApiHeaderOptions.None)
         {
-            await PrepareHeaderOptions(httpOperationHeaderOptions);
+            PrepareHeaderOptions(httpOperationHeaderOptions);
             return await HttpClient.PostAsync<TResult>(url, payload);
         }
 
         async public Task<TResult> GetAsync<TResult>(string url, ApiHeaderOptions httpOperationHeaderOptions = ApiHeaderOptions.None)
         {
-            await PrepareHeaderOptions(httpOperationHeaderOptions);
+            PrepareHeaderOptions(httpOperationHeaderOptions);
             return await HttpClient.GetAsync<TResult>(url);
         }
 
         async public Task DeleteAsync<TResult>(string url, ApiHeaderOptions httpOperationHeaderOptions = ApiHeaderOptions.None)
         {
-            await PrepareHeaderOptions(httpOperationHeaderOptions);
+            PrepareHeaderOptions(httpOperationHeaderOptions);
             var httpResponseMessage = await HttpClient.DeleteAsync(url);
             httpResponseMessage.EnsureSuccessStatusCode();
             return;
         }
 
-        private async Task PrepareHeaderOptions(ApiHeaderOptions httpOperationHeaderOptions)
+        private void PrepareHeaderOptions(ApiHeaderOptions httpOperationHeaderOptions)
         {
             switch (httpOperationHeaderOptions)
             {
                 case ApiHeaderOptions.AddJwt:
-                    await AddJwt();
+                    AddJwt();
                     break;
                 case ApiHeaderOptions.AddApiKey:
                     AddApiKey();

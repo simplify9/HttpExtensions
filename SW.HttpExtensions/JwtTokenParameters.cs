@@ -12,10 +12,13 @@ namespace SW.HttpExtensions
         public string Key { get; set; }
         public string Audience { get; set; }
 
-        public bool IsValid()
+        public bool IsValid 
         {
-            if (Issuer == null || Key == null || Audience == null) return false;
-            return true;
+            get
+            {
+                if (Issuer == null || Key == null || Audience == null) return false;
+                return true;
+            }
         }
     }
 }

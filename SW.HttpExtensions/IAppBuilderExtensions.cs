@@ -35,10 +35,10 @@ namespace SW.HttpExtensions
                         correlationId = cid.First();
 
                     var requestContext = httpContext.RequestServices.GetRequiredService<RequestContext>();
-                    var logger = httpContext.RequestServices.GetRequiredService<ILogger>();
+                    //var logger = httpContext.RequestServices.GetRequiredService<ILogger>();
 
                     requestContext.Set(httpContext.User, vals, correlationId);
-                    logger.LogInformation("Request context set successfully");
+                    //logger.LogInformation("Request context set successfully");
 
                 }
 

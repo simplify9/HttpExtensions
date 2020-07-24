@@ -26,7 +26,6 @@ namespace SW.HttpExtensions
                         vals.Add(new RequestValue(h.Key, string.Join(";", h.Value.ToArray()), RequestValueType.HttpHeader));
 
                     foreach (var q in httpContext.Request.Query)
-                        //if (!ignoredKeys.Contains(q.Key, StringComparer.OrdinalIgnoreCase))
                         vals.Add(new RequestValue(q.Key, string.Join(";", q.Value.ToArray()), RequestValueType.QueryParameter));
 
                     string correlationId = Guid.NewGuid().ToString("N");
@@ -35,10 +34,10 @@ namespace SW.HttpExtensions
                         correlationId = cid.First();
 
                     var requestContext = httpContext.RequestServices.GetRequiredService<RequestContext>();
-                    //var logger = httpContext.RequestServices.GetRequiredService<ILogger>();
 
                     requestContext.Set(httpContext.User, vals, correlationId);
-                    //logger.LogInformation("Request context set successfully");
+                    var loggerFactory = httpContext.RequestServices.GetService<ILoggerFactory>();
+                    if (loggerFactory != null) loggerFactory.CreateLogger("UseHttpUserRequestContext").LogInformation("Request context set successfully");
 
                 }
 

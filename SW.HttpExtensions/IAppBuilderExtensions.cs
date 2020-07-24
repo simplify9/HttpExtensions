@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SW.PrimitiveTypes;
 using System;
 using System.Collections.Generic;
@@ -34,8 +35,10 @@ namespace SW.HttpExtensions
                         correlationId = cid.First();
 
                     var requestContext = httpContext.RequestServices.GetRequiredService<RequestContext>();
+                    var logger = httpContext.RequestServices.GetRequiredService<ILogger>();
 
                     requestContext.Set(httpContext.User, vals, correlationId);
+                    logger.LogInformation("Request context set successfully");
 
                 }
 

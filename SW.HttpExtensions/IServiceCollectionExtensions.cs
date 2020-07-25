@@ -28,7 +28,7 @@ namespace SW.HttpExtensions
         public static IServiceCollection AddApiClient<TInterface, TImplementation, TImplementationMock, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
             where TOptions : ApiClientOptionsBase, new()
             where TImplementationMock : class, TInterface
-            where TImplementation : class, TInterface
+            where TImplementation : ApiClientBase<TOptions>, TInterface
             where TInterface : class
         {
             var clientOptions = serviceCollection.AddApiClientInternal(configure);
@@ -47,13 +47,27 @@ namespace SW.HttpExtensions
 
         public static IServiceCollection AddApiClient<TInterface, TImplementation, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
             where TOptions : ApiClientOptionsBase, new()
-            where TImplementation : class, TInterface
+            where TImplementation : ApiClientBase<TOptions>, TInterface
             where TInterface : class
         {
 
             var clientOptions = serviceCollection.AddApiClientInternal(configure);
 
             serviceCollection.AddHttpClient<TInterface, TImplementation>(httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(clientOptions.BaseUrl);
+            });
+
+            return serviceCollection;
+        }
+
+        public static IServiceCollection AddApiClient<TImplementation, TOptions>(this IServiceCollection serviceCollection, Action<TOptions> configure = null)
+            where TOptions : ApiClientOptionsBase, new()
+            where TImplementation : ApiClientBase<TOptions>
+            
+        {
+            var clientOptions = serviceCollection.AddApiClientInternal(configure);
+            serviceCollection.AddHttpClient<TImplementation>(httpClient =>
             {
                 httpClient.BaseAddress = new Uri(clientOptions.BaseUrl);
             });

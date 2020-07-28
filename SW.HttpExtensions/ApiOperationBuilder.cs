@@ -45,7 +45,7 @@ namespace SW.HttpExtensions
             return this;
         }
 
-        public ApiOperationBuilder<TApiClientOptions> ApiKey(ApiKeyParameters apiKeyParameters)
+        public ApiOperationBuilder<TApiClientOptions> ApiKey(ApiKeyParameters apiKeyParameters = null)
         {
             if (apiKeyParameters == null)
                 apiKeyParameters = options.ApiKey;

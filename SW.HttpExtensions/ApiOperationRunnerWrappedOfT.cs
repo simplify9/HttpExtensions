@@ -21,7 +21,7 @@ namespace SW.HttpExtensions
             this.throwOnFailure = throwOnFailure;
         }
 
-        async public Task<ApiResult<TResponse>> GetAsync(object parameters)
+        async public Task<ApiResult<TResponse>> GetAsync(object parameters = null)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace SW.HttpExtensions
             }
         }
 
-        async public Task<ApiResult<TResponse>> PostAsync(object payload)
+        async public Task<ApiResult<TResponse>> PostAsync(object payload = null)
         {
             try
             {

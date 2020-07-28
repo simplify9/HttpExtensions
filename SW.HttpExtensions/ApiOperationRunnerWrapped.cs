@@ -17,7 +17,7 @@ namespace SW.HttpExtensions
             this.path = path;
         }
 
-        async public Task<ApiResult> GetAsync(object parameters)
+        async public Task<ApiResult> GetAsync(object parameters = null)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace SW.HttpExtensions
             }
         }
 
-        async public Task<ApiResult> PostAsync(object payload)
+        async public Task<ApiResult> PostAsync(object payload = null)
         {
             try
             {

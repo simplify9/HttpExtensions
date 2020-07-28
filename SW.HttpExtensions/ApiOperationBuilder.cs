@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json;
-using SW.PrimitiveTypes;
-using System;
+﻿using SW.PrimitiveTypes;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SW.HttpExtensions
@@ -72,7 +69,7 @@ namespace SW.HttpExtensions
             }
         }
 
-        async public Task<int> PostAsync(object payload, bool throwOnFailure = true)
+        async public Task<int> PostAsync(object payload = null, bool throwOnFailure = true)
         {
             try
             {

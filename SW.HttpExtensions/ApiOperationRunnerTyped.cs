@@ -13,14 +13,14 @@ namespace SW.HttpExtensions
         public ApiOperationRunnerTyped(HttpClient httpClient, string path, bool throwOnFailure)
             => apiOperationRunnerWrapped = new ApiOperationRunnerWrapped<TResponse>(httpClient, path, throwOnFailure);
 
-        async public Task<TResponse> GetAsync(object parameters)
+        async public Task<TResponse> GetAsync(object parameters = null)
         {
             return (await apiOperationRunnerWrapped.GetAsync(parameters)).Response;
         }
 
-        async public Task<TResponse> PostAsync(object paylod)
+        async public Task<TResponse> PostAsync(object payload = null)
         {
-            return (await apiOperationRunnerWrapped.PostAsync(paylod)).Response;
+            return (await apiOperationRunnerWrapped.PostAsync(payload)).Response;
         }
     }
 }

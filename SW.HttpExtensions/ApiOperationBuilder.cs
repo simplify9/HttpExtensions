@@ -44,7 +44,7 @@ namespace SW.HttpExtensions
             return this;
         }
 
-        public ApiOperationBuilder<TApiClientOptions> ApiKey(ApiKeyParameters apiKeyParameters = null)
+        public ApiOperationBuilder<TApiClientOptions> Key(ApiKeyParameters apiKeyParameters = null)
         {
             if (apiKeyParameters == null)
                 apiKeyParameters = options.ApiKey;
@@ -76,8 +76,7 @@ namespace SW.HttpExtensions
             try
             {
                 var httpResponseMessage = await httpClient.DeleteAsync(path);
-                if (throwOnFailure) httpResponseMessage.EnsureSuccessStatusCode();
-                return (int)httpResponseMessage.StatusCode;
+                return ProcessResponse(httpResponseMessage, throwOnFailure);
             }
             catch
             {
@@ -91,8 +90,7 @@ namespace SW.HttpExtensions
             try
             {
                 var httpResponseMessage = await httpClient.PostAsync(path, stringContent);
-                if (throwOnFailure) httpResponseMessage.EnsureSuccessStatusCode();
-                return (int)httpResponseMessage.StatusCode;
+                return ProcessResponse(httpResponseMessage, throwOnFailure);
             }
             catch
             {
@@ -100,6 +98,13 @@ namespace SW.HttpExtensions
                 return 0;
             }
         }
+
+        private int ProcessResponse(HttpResponseMessage httpResponseMessage, bool throwOnFailure)
+        {
+            if (throwOnFailure) httpResponseMessage.EnsureSuccessStatusCode();
+            return (int)httpResponseMessage.StatusCode;
+        }
+        
         public ApiOperationRunnerTyped<TResponse> As<TResponse>(bool throwOnFailure = true)
             => new ApiOperationRunnerTyped<TResponse>(httpClient, path, stringContent, throwOnFailure);
         public ApiOperationRunnerWrapped<TResponse> AsApiResult<TResponse>()

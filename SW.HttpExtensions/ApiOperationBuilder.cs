@@ -15,7 +15,6 @@ namespace SW.HttpExtensions
         private readonly RequestContext requestContext;
         private readonly TApiClientOptions options;
 
-        private StringContent stringContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
         private string path = string.Empty;
 
         public ApiOperationBuilder(HttpClient httpClient, RequestContext requestContext, TApiClientOptions options)
@@ -59,18 +58,6 @@ namespace SW.HttpExtensions
             return this;
         }
 
-        public ApiOperationBuilder<TApiClientOptions> Body(string body)
-        {
-            stringContent = new StringContent(body, Encoding.UTF8, "application/json");
-            return this;
-        }
-
-        public ApiOperationBuilder<TApiClientOptions> Body(object body)
-        {
-            stringContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
-            return this;
-        }
-
         async public Task<int> DeleteAsync(bool throwOnFailure = true)
         {
             try
@@ -85,11 +72,11 @@ namespace SW.HttpExtensions
             }
         }
 
-        async public Task<int> PostAsync(bool throwOnFailure = true)
+        async public Task<int> PostAsync(object payload, bool throwOnFailure = true)
         {
             try
             {
-                var httpResponseMessage = await httpClient.PostAsync(path, stringContent);
+                var httpResponseMessage = await httpClient.PostAsync(path, httpClient.CreateStringContent(payload));
                 return ProcessResponse(httpResponseMessage, throwOnFailure);
             }
             catch
@@ -104,12 +91,12 @@ namespace SW.HttpExtensions
             if (throwOnFailure) httpResponseMessage.EnsureSuccessStatusCode();
             return (int)httpResponseMessage.StatusCode;
         }
-        
+
         public ApiOperationRunnerTyped<TResponse> As<TResponse>(bool throwOnFailure = true)
-            => new ApiOperationRunnerTyped<TResponse>(httpClient, path, stringContent, throwOnFailure);
+            => new ApiOperationRunnerTyped<TResponse>(httpClient, path, throwOnFailure);
         public ApiOperationRunnerWrapped<TResponse> AsApiResult<TResponse>()
-            => new ApiOperationRunnerWrapped<TResponse>(httpClient, path, stringContent);
+            => new ApiOperationRunnerWrapped<TResponse>(httpClient, path);
         public ApiOperationRunnerWrapped AsApiResult()
-            => new ApiOperationRunnerWrapped(httpClient, path, stringContent);
+            => new ApiOperationRunnerWrapped(httpClient, path);
     }
 }

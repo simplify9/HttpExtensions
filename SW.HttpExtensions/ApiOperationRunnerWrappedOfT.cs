@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -11,18 +12,16 @@ namespace SW.HttpExtensions
     {
         private readonly HttpClient httpClient;
         private readonly string path;
-        private readonly HttpContent stringContent;
         private readonly bool throwOnFailure;
 
-        public ApiOperationRunnerWrapped(HttpClient httpClient, string path, HttpContent stringContent, bool throwOnFailure = false)
+        public ApiOperationRunnerWrapped(HttpClient httpClient, string path, bool throwOnFailure = false)
         {
             this.httpClient = httpClient;
             this.path = path;
-            this.stringContent = stringContent;
             this.throwOnFailure = throwOnFailure;
         }
 
-        async public Task<ApiResult<TResponse>> GetAsync()
+        async public Task<ApiResult<TResponse>> GetAsync(object parameters)
         {
             try
             {
@@ -40,11 +39,11 @@ namespace SW.HttpExtensions
             }
         }
 
-        async public Task<ApiResult<TResponse>> PostAsync()
+        async public Task<ApiResult<TResponse>> PostAsync(object payload)
         {
             try
             {
-                var httpResponseMessage = await httpClient.PostAsync(path, stringContent);
+                var httpResponseMessage = await httpClient.PostAsync(path, httpClient.CreateStringContent(payload));
                 return await ProcessResponse(httpResponseMessage);
             }
             catch (Exception ex)
@@ -56,6 +55,8 @@ namespace SW.HttpExtensions
                 };
             }
         }
+
+
 
         async private Task<ApiResult<TResponse>> ProcessResponse(HttpResponseMessage httpResponseMessage)
         {

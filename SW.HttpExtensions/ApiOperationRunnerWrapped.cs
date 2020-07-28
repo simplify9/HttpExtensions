@@ -10,16 +10,14 @@ namespace SW.HttpExtensions
     {
         private readonly HttpClient httpClient;
         private readonly string path;
-        private readonly HttpContent stringContent;
 
-        public ApiOperationRunnerWrapped(HttpClient httpClient, string path, HttpContent stringContent)
+        public ApiOperationRunnerWrapped(HttpClient httpClient, string path)
         {
             this.httpClient = httpClient;
             this.path = path;
-            this.stringContent = stringContent;
         }
 
-        async public Task<ApiResult> GetAsync()
+        async public Task<ApiResult> GetAsync(object parameters)
         {
             try
             {
@@ -41,11 +39,11 @@ namespace SW.HttpExtensions
             }
         }
 
-        async public Task<ApiResult> PostAsync()
+        async public Task<ApiResult> PostAsync(object payload)
         {
             try
             {
-                var httpResponseMessage = await httpClient.PostAsync(path, stringContent);
+                var httpResponseMessage = await httpClient.PostAsync(path, httpClient.CreateStringContent(payload));
                 return new ApiResult
                 {
                     Body = await httpResponseMessage.Content.ReadAsStringAsync(),

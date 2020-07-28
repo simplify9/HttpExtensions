@@ -10,17 +10,17 @@ namespace SW.HttpExtensions
     {
         private readonly ApiOperationRunnerWrapped<TResponse> apiOperationRunnerWrapped;
 
-        public ApiOperationRunnerTyped(HttpClient httpClient, string path, HttpContent stringContent, bool throwOnFailure)
-            => apiOperationRunnerWrapped = new ApiOperationRunnerWrapped<TResponse>(httpClient, path, stringContent, throwOnFailure);
+        public ApiOperationRunnerTyped(HttpClient httpClient, string path, bool throwOnFailure)
+            => apiOperationRunnerWrapped = new ApiOperationRunnerWrapped<TResponse>(httpClient, path, throwOnFailure);
 
-        async public Task<TResponse> GetAsync()
+        async public Task<TResponse> GetAsync(object parameters)
         {
-            return (await apiOperationRunnerWrapped.GetAsync()).Response;
+            return (await apiOperationRunnerWrapped.GetAsync(parameters)).Response;
         }
 
-        async public Task<TResponse> PostAsync()
+        async public Task<TResponse> PostAsync(object paylod)
         {
-            return (await apiOperationRunnerWrapped.PostAsync()).Response;
+            return (await apiOperationRunnerWrapped.PostAsync(paylod)).Response;
         }
     }
 }

@@ -34,5 +34,15 @@ namespace SW.HttpExtensions
             httpResponseMessage.EnsureSuccessStatusCode();
             return await httpResponseMessage.Content.ReadAsAsync<TResult>();
         }
+
+        public static StringContent CreateStringContent(this HttpClient client, object payload)
+        {
+            if (payload == null)
+                return new StringContent(string.Empty, Encoding.UTF8, "application/json");
+            else if (payload.GetType() == typeof(string) || payload.GetType().IsPrimitive)
+                return new StringContent(payload.ToString(), Encoding.UTF8, "application/json");
+            else
+                return new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+        }
     }
 }

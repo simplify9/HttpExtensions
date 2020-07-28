@@ -5,8 +5,6 @@ using SW.PrimitiveTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace SW.HttpExtensions
 {
@@ -41,12 +39,10 @@ namespace SW.HttpExtensions
 
                 }
 
-
                 await next();
             });
 
             return applicationBuilder;
-
         }
     }
 }

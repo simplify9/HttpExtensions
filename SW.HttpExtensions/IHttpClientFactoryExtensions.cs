@@ -15,7 +15,6 @@ namespace SW.HttpExtensions
             httpClient.BaseAddress = baseAddress;
 
             if (jwt != null)
-
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwt);
 
             return httpClient;

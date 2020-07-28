@@ -16,7 +16,7 @@ namespace SW.HttpExtensions
         private readonly TApiClientOptions options;
 
         private StringContent stringContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
-        private string url = string.Empty;
+        private string path = string.Empty;
         private bool mustSucceed;
 
         public ApiOperationBuilder(HttpClient httpClient, RequestContext requestContext, TApiClientOptions options)
@@ -26,9 +26,9 @@ namespace SW.HttpExtensions
             this.options = options;
         }
 
-        public ApiOperationBuilder<TApiClientOptions> Url(string url)
+        public ApiOperationBuilder<TApiClientOptions> Path(string path)
         {
-            this.url = url;
+            this.path = path;
             return this;
         }
 
@@ -82,7 +82,7 @@ namespace SW.HttpExtensions
         {
             try
             {
-                var httpResponseMessage = await httpClient.GetAsync(url);
+                var httpResponseMessage = await httpClient.GetAsync(path);
 
                 if (mustSucceed) httpResponseMessage.EnsureSuccessStatusCode();
 
@@ -130,7 +130,7 @@ namespace SW.HttpExtensions
             try
             {
                 //await PopulateJwt();
-                var httpResponseMessage = await httpClient.DeleteAsync(url);
+                var httpResponseMessage = await httpClient.DeleteAsync(path);
 
                 if (mustSucceed) httpResponseMessage.EnsureSuccessStatusCode();
 
@@ -170,7 +170,7 @@ namespace SW.HttpExtensions
         {
             try
             {
-                var httpResponseMessage = await httpClient.PostAsync(url, stringContent);
+                var httpResponseMessage = await httpClient.PostAsync(path, stringContent);
 
                 if (mustSucceed) httpResponseMessage.EnsureSuccessStatusCode();
 

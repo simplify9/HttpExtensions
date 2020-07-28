@@ -17,7 +17,6 @@ namespace SW.HttpExtensions
 
         private StringContent stringContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
         private string path = string.Empty;
-        private bool mustSucceed;
 
         public ApiOperationBuilder(HttpClient httpClient, RequestContext requestContext, TApiClientOptions options)
         {
@@ -54,12 +53,6 @@ namespace SW.HttpExtensions
             return this;
         }
 
-        public ApiOperationBuilder<TApiClientOptions> MustSucceed(bool mustSucceed = true)
-        {
-            this.mustSucceed = mustSucceed;
-            return this;
-        }
-
         public ApiOperationBuilder<TApiClientOptions> Header(string name, string value)
         {
             httpClient.DefaultRequestHeaders.Add(name, value);
@@ -78,149 +71,40 @@ namespace SW.HttpExtensions
             return this;
         }
 
-        async public Task<ApiResult<TResponse>> GetAsync<TResponse>()
+        async public Task<int> DeleteAsync(bool throwOnFailure = true)
         {
             try
             {
-                var httpResponseMessage = await httpClient.GetAsync(path);
-
-                if (mustSucceed) httpResponseMessage.EnsureSuccessStatusCode();
-
-                if ((int)httpResponseMessage.StatusCode >= 200 && (int)httpResponseMessage.StatusCode < 300)
-                {
-                    TResponse response;
-                    if (typeof(TResponse) == typeof(string))
-
-                        response = (TResponse)(object)(await httpResponseMessage.Content.ReadAsStringAsync());
-
-                    else
-                        response = await httpResponseMessage.Content.ReadAsAsync<TResponse>();
-
-                    return new ApiResult<TResponse>
-                    {
-                        Response = response,
-                        Success = true,
-                        StatusCode = (int)httpResponseMessage.StatusCode
-                    };
-                }
-
-                else
-                {
-                    return new ApiResult<TResponse>
-                    {
-                        StatusCode = (int)httpResponseMessage.StatusCode,
-                        Body = await httpResponseMessage.Content.ReadAsStringAsync()
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                if (mustSucceed) throw;
-
-                return new ApiResult<TResponse>
-                {
-                    StatusCode = 0,
-                    Body = ex.Message
-                };
-            }
-        }
-
-        async public Task<ApiResult> DeleteAsync()
-        {
-            try
-            {
-                //await PopulateJwt();
                 var httpResponseMessage = await httpClient.DeleteAsync(path);
-
-                if (mustSucceed) httpResponseMessage.EnsureSuccessStatusCode();
-
-                return new ApiResult
-                {
-                    StatusCode = (int)httpResponseMessage.StatusCode,
-                    Success = (int)httpResponseMessage.StatusCode >= 200 && (int)httpResponseMessage.StatusCode < 300
-                };
-
+                if (throwOnFailure) httpResponseMessage.EnsureSuccessStatusCode();
+                return (int)httpResponseMessage.StatusCode;
             }
-            catch (Exception ex)
+            catch
             {
-
-                if (mustSucceed) throw;
-
-                return new ApiResult
-                {
-                    StatusCode = 0,
-                    Body = ex.Message
-                };
+                if (throwOnFailure) throw;
+                return 0;
             }
         }
 
-        async public Task<ApiResult> PostAsync()
-        {
-            var result = await PostAsync<NoT>();
-
-            return new ApiResult
-            {
-                Body = result.Body,
-                StatusCode = result.StatusCode,
-                Success = result.Success
-            };
-        }
-
-        async public Task<ApiResult<TResponse>> PostAsync<TResponse>()
+        async public Task<int> PostAsync(bool throwOnFailure = true)
         {
             try
             {
                 var httpResponseMessage = await httpClient.PostAsync(path, stringContent);
-
-                if (mustSucceed) httpResponseMessage.EnsureSuccessStatusCode();
-
-                if ((int)httpResponseMessage.StatusCode >= 200 && (int)httpResponseMessage.StatusCode < 300)
-                {
-
-                    TResponse response;
-                    string body = null;
-
-                    if (typeof(TResponse) == typeof(string))
-                        response = (TResponse)(object)(await httpResponseMessage.Content.ReadAsStringAsync());
-
-                    else if (typeof(TResponse) == typeof(NoT))
-                    {
-                        response = default;
-                        body = await httpResponseMessage.Content.ReadAsStringAsync();
-                    }
-                    else
-                        response = await httpResponseMessage.Content.ReadAsAsync<TResponse>();
-
-                    return new ApiResult<TResponse>
-                    {
-                        StatusCode = (int)httpResponseMessage.StatusCode,
-                        Success = true,
-                        Response = response,
-                        Body = body
-                    };
-                }
-
-                else
-                    return new ApiResult<TResponse>
-                    {
-                        StatusCode = (int)httpResponseMessage.StatusCode,
-                        Body = await httpResponseMessage.Content.ReadAsStringAsync()
-                    };
+                if (throwOnFailure) httpResponseMessage.EnsureSuccessStatusCode();
+                return (int)httpResponseMessage.StatusCode;
             }
-            catch (Exception ex)
+            catch
             {
-
-                if (mustSucceed) throw;
-
-                return new ApiResult<TResponse>
-                {
-                    StatusCode = 0,
-                    Body = ex.Message
-                };
+                if (throwOnFailure) throw;
+                return 0;
             }
-
         }
-
-        private class NoT { }
+        public ApiOperationRunnerTyped<TResponse> As<TResponse>(bool throwOnFailure = true)
+            => new ApiOperationRunnerTyped<TResponse>(httpClient, path, stringContent, throwOnFailure);
+        public ApiOperationRunnerWrapped<TResponse> AsApiResult<TResponse>()
+            => new ApiOperationRunnerWrapped<TResponse>(httpClient, path, stringContent);
+        public ApiOperationRunnerWrapped AsApiResult()
+            => new ApiOperationRunnerWrapped(httpClient, path, stringContent);
     }
 }

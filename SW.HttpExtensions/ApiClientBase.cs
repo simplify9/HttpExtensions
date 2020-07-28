@@ -6,12 +6,8 @@ namespace SW.HttpExtensions
 {
     public abstract class ApiClientBase<TApiClientOptions> where TApiClientOptions : ApiClientOptionsBase
     {
-        private readonly RequestContext requestContext;
-
         protected ApiClientBase(HttpClient httpClient, RequestContext requestContext, TApiClientOptions options)
         {
-            this.requestContext = requestContext;
-
             HttpClient = httpClient;
             Options = options;
             Builder = new ApiOperationBuilder<TApiClientOptions>(httpClient, requestContext, Options);

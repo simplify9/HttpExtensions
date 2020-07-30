@@ -1,13 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SW.HttpExtensions
 {
-
     public class ApiOperationRunnerWrapped<TResponse>
     {
         private readonly HttpClient httpClient;
@@ -55,8 +51,6 @@ namespace SW.HttpExtensions
                 };
             }
         }
-
-
 
         async private Task<ApiResult<TResponse>> ProcessResponse(HttpResponseMessage httpResponseMessage)
         {

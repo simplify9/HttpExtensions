@@ -18,6 +18,7 @@ namespace SW.HttpExtensions
             {
                 if (httpContext.User.Identity.IsAuthenticated)
                 {
+                    var requestContext = httpContext.RequestServices.GetRequiredService<RequestContext>();
                     var vals = new List<RequestValue>();
 
                     foreach (var h in httpContext.Request.Headers)
@@ -26,17 +27,12 @@ namespace SW.HttpExtensions
                     foreach (var q in httpContext.Request.Query)
                         vals.Add(new RequestValue(q.Key, string.Join(";", q.Value.ToArray()), RequestValueType.QueryParameter));
 
-                    string correlationId = Guid.NewGuid().ToString("N");
+                    httpContext.Request.Headers.TryGetValue(RequestContext.CorrelationIdHeaderName, out var cid);
 
-                    if (httpContext.Request.Headers.TryGetValue("request-correlation-id", out var cid) && cid.Count > 0)
-                        correlationId = cid.First();
+                    requestContext.Set(httpContext.User, vals, cid.FirstOrDefault());
 
-                    var requestContext = httpContext.RequestServices.GetRequiredService<RequestContext>();
-
-                    requestContext.Set(httpContext.User, vals, correlationId);
                     var loggerFactory = httpContext.RequestServices.GetService<ILoggerFactory>();
                     if (loggerFactory != null) loggerFactory.CreateLogger("UseHttpUserRequestContext").LogInformation("Request context set successfully");
-
                 }
 
                 await next();

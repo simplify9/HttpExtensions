@@ -21,7 +21,7 @@ namespace SW.HttpExtensions
             this.options = options;
 
             if (requestContext.IsValid)
-                httpClient.DefaultRequestHeaders.Add(requestContext.CorrelationId, requestContext.CorrelationId);
+                httpClient.DefaultRequestHeaders.Add(RequestContext.CorrelationIdHeaderName, requestContext.CorrelationId);
         }
 
         public ApiOperationBuilder<TApiClientOptions> Path(string path)

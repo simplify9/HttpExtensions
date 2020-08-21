@@ -58,12 +58,20 @@ namespace SW.HttpExtensions
             if (throwOnFailure) httpResponseMessage.EnsureSuccessStatusCode();
             if ((int)httpResponseMessage.StatusCode >= 200 && (int)httpResponseMessage.StatusCode < 300)
             {
-                return new ApiResult<TResponse>
-                {
-                    StatusCode = (int)httpResponseMessage.StatusCode,
-                    Success = true,
-                    Response = await httpResponseMessage.Content.ReadAsAsync<TResponse>(),
-                };
+                if (typeof(TResponse) == typeof(string))
+                    return new ApiResult<TResponse>
+                    {
+                        StatusCode = (int)httpResponseMessage.StatusCode,
+                        Success = true,
+                        Response = (TResponse)(object)await httpResponseMessage.Content.ReadAsStringAsync(),
+                    };
+                else
+                    return new ApiResult<TResponse>
+                    {
+                        StatusCode = (int)httpResponseMessage.StatusCode,
+                        Success = true,
+                        Response = await httpResponseMessage.Content.ReadAsAsync<TResponse>(),
+                    };
             }
             else
                 return new ApiResult<TResponse>

@@ -76,6 +76,7 @@ namespace SW.HttpExtensions
 
                     if (isEnumerable)
                     {
+                        // passing an instantiated dynamic object will cause runtime errors
                         AssignEnumerable(queries.Count, propType, queries, out dynamic enumerableValue);
                         value = enumerableValue;
                     }
@@ -95,7 +96,6 @@ namespace SW.HttpExtensions
             catch (Exception ex)
             {
                 throw new SWException($"Error constructing type: '{type.Name}' from parameters. {ex.Message}");
-
             }
         }
     }

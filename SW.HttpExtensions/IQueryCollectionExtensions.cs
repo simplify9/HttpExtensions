@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using SW.PrimitiveTypes;
 using System;
 using System.Collections;
@@ -13,6 +14,49 @@ namespace SW.HttpExtensions
         public static T GetInstance<T>(this IQueryCollection queryCollection)
         {
             return (T)queryCollection.GetInstance(typeof(T)); 
+        }
+
+        private static Array GetDynamicArray(Type nested, int count, IEnumerable<object> contents)
+        {
+            Array tmp = Array.CreateInstance(nested, count);
+            for (int i = 0; i < count; i++)
+                tmp.SetValue(contents.ElementAt(i), i);
+            return tmp;
+        }
+
+        private static void AssignEnumerable(int count, Type propType, StringValues queries, out dynamic value)
+        {
+
+            if (count == 0)
+            {
+                value = null;
+                return;
+            }
+
+            // Element type if array, gen arg if complex enumerable type.
+            Type nested = propType.GetElementType() ?? propType.GetGenericArguments()[0];
+            //Generate Array type to construct enumerable members.
+            var dynamicArray = GetDynamicArray(nested, count, queries.Select(q => q.ConvertValueToType(nested)));
+
+            bool isArray = propType.IsArray;
+
+            if (propType.IsArray)
+            {
+                value = dynamicArray;
+                return;
+            }
+
+            // Interface types can not be constructed, assigned a list.
+            if (propType.IsInterface)
+            {
+                propType = typeof(List<>);
+                propType = propType.MakeGenericType(nested);
+            }
+
+            value = Activator.CreateInstance(propType);
+
+            foreach(var item in dynamicArray)
+                value.Add((dynamic)item.ConvertValueToType(nested));
         }
 
         public static object GetInstance(this IQueryCollection queryCollection, Type type)
@@ -32,34 +76,8 @@ namespace SW.HttpExtensions
 
                     if (isEnumerable)
                     {
-                        bool isArray = propType.IsArray;
-
-                        Type nested = propType.GetElementType() ?? propType.GetGenericArguments()[0];
-                        Array tmp = Array.CreateInstance(nested, queries.Count);
-
-                        //Populate tmp array
-                        var queryObjects = queries.Select(q => q.ConvertValueToType(nested));
-                        for (int i = 0; i < queries.Count; i++)
-                            tmp.SetValue(queryObjects.ElementAt(i), i);
-
-                        // Interface types can not be constructed 
-                        if (propType.IsInterface)
-                        {
-                            propType = typeof(List<>);
-                            propType = propType.MakeGenericType(nested);
-                        }
-                        if (isArray)
-                        {
-                            value = tmp;
-                        }
-                        else
-                        {
-                            var dynamicList  = (List<object>)Activator.CreateInstance(typeof(List<object>), new object[] { tmp });
-                            value = Activator.CreateInstance(propType);
-                            foreach(var item in dynamicList)
-                                value.Add((dynamic)item.ConvertValueToType(nested));
-
-                        }
+                        AssignEnumerable(queries.Count, propType, queries, out dynamic enumerableValue);
+                        value = enumerableValue;
                     }
                     else
                     {

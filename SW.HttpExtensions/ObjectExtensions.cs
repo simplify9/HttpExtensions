@@ -19,7 +19,7 @@ namespace SW.HttpExtensions
                 .Select(property =>
                 {
 
-                    bool isEnumerable = property.PropertyType.GetInterface(nameof(IEnumerable)) != null;
+                    bool isEnumerable = property.PropertyType.GetInterface(nameof(IEnumerable)) != null && property.PropertyType != typeof(string);
                     if (isEnumerable)
                     {
                         IEnumerable tmp = ((IEnumerable)property.GetValue(obj).ConvertValueToType(property.PropertyType));

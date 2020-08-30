@@ -23,27 +23,43 @@ namespace SW.HttpExtensions
                 var properties = type.GetProperties();
                 foreach (var property in properties)
                 {
-                    object value = null;
+                    dynamic value = null;
                     Type propType = property.PropertyType;
-                    if (propType.IsInterface)
-                        throw new SWException($"Type of {property.Name} is an interface. If it's a collection type, consider using List<> or an array.");
 
                     var queries = queryCollection[property.Name];
 
-                    bool isEnumerable = property.PropertyType.GetInterface(nameof(IEnumerable)) != null;
+                    bool isEnumerable = property.PropertyType.GetInterface(nameof(IEnumerable)) != null && property.PropertyType != typeof(string);
 
                     if (isEnumerable)
                     {
+                        bool isArray = propType.IsArray;
+
                         Type nested = propType.GetElementType() ?? propType.GetGenericArguments()[0];
                         Array tmp = Array.CreateInstance(nested, queries.Count);
 
+                        //Populate tmp array
                         var queryObjects = queries.Select(q => q.ConvertValueToType(nested));
                         for (int i = 0; i < queries.Count; i++)
                             tmp.SetValue(queryObjects.ElementAt(i), i);
 
-                        Type listType = propType.IsInterface ? typeof(List<object>) : propType;
-                        bool isArray = propType.IsArray;
-                        value = isArray ? tmp : Activator.CreateInstance(listType, new object[] { new object[] { tmp } });
+                        // Interface types can not be constructed 
+                        if (propType.IsInterface)
+                        {
+                            propType = typeof(List<>);
+                            propType = propType.MakeGenericType(nested);
+                        }
+                        if (isArray)
+                        {
+                            value = tmp;
+                        }
+                        else
+                        {
+                            var dynamicList  = (List<object>)Activator.CreateInstance(typeof(List<object>), new object[] { tmp });
+                            value = Activator.CreateInstance(propType);
+                            foreach(var item in dynamicList)
+                                value.Add((dynamic)item.ConvertValueToType(nested));
+
+                        }
                     }
                     else
                     {

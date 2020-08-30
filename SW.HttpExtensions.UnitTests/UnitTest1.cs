@@ -20,7 +20,9 @@ namespace SW.HttpExtensions.UnitTests
             public int Q { get; set; }
             public int Paging { get; set; }
             public string Stuff { get; set; }
+            public List<int> ConcreteList { get; set; }
             public IEnumerable<string> Stuffs { get; set; }
+            public string[] SupposedlyEmpty { get; set; }
             public string Q2 { get; set; }
 
             public override bool Equals(object obj)
@@ -30,6 +32,8 @@ namespace SW.HttpExtensions.UnitTests
                        Paging == instance.Paging &&
                        Stuff == instance.Stuff &&
                        instance.Stuffs.All(item => Stuffs.Contains(item)) &&
+                       instance.SupposedlyEmpty == null &&
+                       instance.ConcreteList.All(item => ConcreteList.Contains(item)) &&
                        Q2 == instance.Q2;
             }
 
@@ -42,7 +46,7 @@ namespace SW.HttpExtensions.UnitTests
         [TestMethod]
         public void TestFromQuery()
         {
-            QueryString queryString = new QueryString("?q=1&q2=Hello There&paging=12&stuff=TestWords&Stuffs=1&Stuffs=2");
+            QueryString queryString = new QueryString("?q=1&q2=Hello There&paging=12&stuff=TestWords&Stuffs=1&Stuffs=2&ConcreteList=3&ConcreteList=4");
             HttpRequest rq = new DefaultHttpContext().Request;
             rq.QueryString = queryString;
             var queryCollection = rq.Query;
@@ -54,7 +58,8 @@ namespace SW.HttpExtensions.UnitTests
                 Q2 = "Hello There",
                 Paging = 12,
                 Stuff = "TestWords",
-                Stuffs = new string[] { "1", "2"}
+                Stuffs = new string[] { "1", "2"},
+                ConcreteList = new List<int> { 3, 4}
             };
             Assert.AreEqual(instance, trueInstance);
         }
@@ -67,10 +72,10 @@ namespace SW.HttpExtensions.UnitTests
                 Age = 90,
                 TestVar = 10.0f,
                 Test2 = 500,
-                Test3 = "MoreTests"
+                ListTest = new List<string> { "okay1", "okay2", "okay3"}
             };
             var str = a.ToQueryString();
-            var trueCase = "Name=Test name&Age=90&TestVar=10&Test2=500&Test3=MoreTests";
+            var trueCase = "Name=Test name&Age=90&TestVar=10&Test2=500&ListTest=okay1&ListTest=okay2&ListTest=okay3";
             Assert.AreEqual(str, trueCase);
         }
 

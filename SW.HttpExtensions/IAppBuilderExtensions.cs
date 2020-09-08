@@ -11,29 +11,26 @@ namespace SW.HttpExtensions
     public static class IAppBuilderExtensions
     {
 
-        public static IApplicationBuilder UseHttpUserRequestContext(this IApplicationBuilder applicationBuilder)
+        public static IApplicationBuilder UseHttpAsRequestContext(this IApplicationBuilder applicationBuilder)
         {
 
             applicationBuilder.Use(async (httpContext, next) =>
             {
-                if (httpContext.User.Identity.IsAuthenticated)
-                {
-                    var requestContext = httpContext.RequestServices.GetRequiredService<RequestContext>();
-                    var vals = new List<RequestValue>();
+                var requestContext = httpContext.RequestServices.GetRequiredService<RequestContext>();
+                var vals = new List<RequestValue>();
 
-                    foreach (var h in httpContext.Request.Headers)
-                        vals.Add(new RequestValue(h.Key, string.Join(";", h.Value.ToArray()), RequestValueType.HttpHeader));
+                foreach (var h in httpContext.Request.Headers)
+                    vals.Add(new RequestValue(h.Key, string.Join(";", h.Value.ToArray()), RequestValueType.HttpHeader));
 
-                    foreach (var q in httpContext.Request.Query)
-                        vals.Add(new RequestValue(q.Key, string.Join(";", q.Value.ToArray()), RequestValueType.QueryParameter));
+                foreach (var q in httpContext.Request.Query)
+                    vals.Add(new RequestValue(q.Key, string.Join(";", q.Value.ToArray()), RequestValueType.QueryParameter));
 
-                    httpContext.Request.Headers.TryGetValue(RequestContext.CorrelationIdHeaderName, out var cid);
+                httpContext.Request.Headers.TryGetValue(RequestContext.CorrelationIdHeaderName, out var cid);
 
-                    requestContext.Set(httpContext.User, vals, cid.FirstOrDefault());
+                requestContext.Set(httpContext.User, vals, cid.FirstOrDefault());
 
-                    var loggerFactory = httpContext.RequestServices.GetService<ILoggerFactory>();
-                    if (loggerFactory != null) loggerFactory.CreateLogger("UseHttpUserRequestContext").LogInformation("Request context set successfully");
-                }
+                var loggerFactory = httpContext.RequestServices.GetService<ILoggerFactory>();
+                if (loggerFactory != null) loggerFactory.CreateLogger("UseHttpUserRequestContext").LogInformation("Request context set successfully");
 
                 await next();
             });

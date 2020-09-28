@@ -40,7 +40,7 @@ namespace SW.HttpExtensions
         {
             try
             {
-                var httpResponseMessage = await httpClient.PostAsync(path, httpClient.CreateStringContent(payload));
+                var httpResponseMessage = await httpClient.PostAsync(path, httpClient.CreateHttpContent(payload));
                 return await ProcessResponse(httpResponseMessage);
             }
             catch (Exception ex)

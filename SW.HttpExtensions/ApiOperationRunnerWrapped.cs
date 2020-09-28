@@ -42,7 +42,7 @@ namespace SW.HttpExtensions
         {
             try
             {
-                var httpResponseMessage = await httpClient.PostAsync(path, httpClient.CreateStringContent(payload));
+                var httpResponseMessage = await httpClient.PostAsync(path, httpClient.CreateHttpContent(payload));
                 return new ApiResult
                 {
                     Body = await httpResponseMessage.Content.ReadAsStringAsync(),

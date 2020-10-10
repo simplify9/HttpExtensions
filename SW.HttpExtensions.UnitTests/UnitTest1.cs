@@ -58,12 +58,12 @@ namespace SW.HttpExtensions.UnitTests
                 Q2 = "Hello There",
                 Paging = 12,
                 Stuff = "TestWords",
-                Stuffs = new string[] { "1", "2"},
-                ConcreteList = new List<int> { 3, 4}
+                Stuffs = new string[] { "1", "2" },
+                ConcreteList = new List<int> { 3, 4 }
             };
             Assert.AreEqual(instance, trueInstance);
         }
-        [TestMethod] 
+        [TestMethod]
         public void TestToQuery()
         {
             var a = new
@@ -72,7 +72,7 @@ namespace SW.HttpExtensions.UnitTests
                 Age = 90,
                 TestVar = 10.0f,
                 Test2 = 500,
-                ListTest = new List<string> { "okay1", "okay2", "okay3"}
+                ListTest = new List<string> { "okay1", "okay2", "okay3" }
             };
             var str = a.ToQueryString();
             var trueCase = "Name=Test name&Age=90&TestVar=10&Test2=500&ListTest=okay1&ListTest=okay2&ListTest=okay3";
@@ -94,6 +94,19 @@ namespace SW.HttpExtensions.UnitTests
             var jwt = jwtTokenParameters.WriteJwt(claimsIdentity);
 
             var claimsPrincipal = jwtTokenParameters.ReadJwt(jwt);
+        }
+
+        [TestMethod]
+        public void TestToQueryString()
+        {
+            var testQueryType = new TestQueryType
+            {
+
+                Id = "123"
+                
+            };
+
+            var queryString = testQueryType.ToQueryString();
         }
     }
 }

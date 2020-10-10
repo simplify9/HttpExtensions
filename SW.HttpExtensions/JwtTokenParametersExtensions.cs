@@ -11,7 +11,12 @@ namespace SW.HttpExtensions
     {
         private readonly static TimeSpan defaultExpiry = TimeSpan.FromDays(7);
 
-        public static string WriteJwt(this JwtTokenParameters jwtTokenParameters, ClaimsIdentity claimsIdentity, TimeSpan? expires = null)
+        public static string WriteJwt(this JwtTokenParameters jwtTokenParameters, ClaimsIdentity claimsIdentity)
+        {
+            return jwtTokenParameters.WriteJwt(claimsIdentity, defaultExpiry);
+        }
+
+        public static string WriteJwt(this JwtTokenParameters jwtTokenParameters, ClaimsIdentity claimsIdentity, TimeSpan? expires)
         {
             if (!jwtTokenParameters.IsValid) return null;
 

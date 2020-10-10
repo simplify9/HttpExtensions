@@ -35,12 +35,19 @@ namespace SW.HttpExtensions
                         }
 
                         string q = string.Empty;
-                        for (int i = 0; i < array.Length - 1; i++) q += $"{property.Name}={array.GetValue(i)}&";
+                        for (int i = 0; i < array.Length - 1; i++) 
+                            q += $"{property.Name}={array.GetValue(i)}&";
                         q += $"{property.Name}={array.GetValue(array.Length - 1)}";
 
                         return q;
                     }
-                    else return $"{property.Name}={property.GetValue(obj)}";
+                    else
+                    {
+                        var value = property.GetValue(obj);
+                        if (value == null) return string.Empty;
+                        else return $"{property.Name}={property.GetValue(obj)}";
+                    }
+                        
                 })
                 .ToArray();
 

@@ -8,7 +8,7 @@ namespace SW.HttpExtensions
     public class ApiOperationRunnerWrapped<TResponse>
     {
         private readonly HttpClient httpClient;
-        private readonly string path;
+        private string path;
         private readonly bool throwOnFailure;
 
         public ApiOperationRunnerWrapped(HttpClient httpClient, string path, bool throwOnFailure = false)
@@ -22,6 +22,12 @@ namespace SW.HttpExtensions
         {
             try
             {
+                if (parameters  != null)
+                {
+                    //var pathUri = Uri.;
+                    path = $"{path}?{parameters.ToQueryString()}";
+                }
+                    
                 var httpResponseMessage = await httpClient.GetAsync(path);
                 return await ProcessResponse(httpResponseMessage);
             }

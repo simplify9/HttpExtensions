@@ -8,14 +8,9 @@ namespace SW.HttpExtensions
 {
     public static class ObjectExtensions
     {
-        public static string ToQueryString<T>(this T obj) where T : class
+        public static string ToQueryString(this object obj)
         {
-            return obj.ToQueryString(typeof(T));
-        }
-
-        public static string ToQueryString(this object obj, Type type)
-        {
-            string[] props = type.GetProperties()
+            string[] props = obj.GetType().GetProperties()
                 .Select(property =>
                 {
 
@@ -50,7 +45,10 @@ namespace SW.HttpExtensions
                 .ToArray();
 
             string queryString = string.Empty;
-            for (int i = 0; i < props.Count() - 1; i++) queryString += props[i] + '&';
+
+            for (int i = 0; i < props.Count() - 1; i++)
+                queryString += props[i] + '&';
+
             queryString += props[props.Length - 1];
 
             return queryString;

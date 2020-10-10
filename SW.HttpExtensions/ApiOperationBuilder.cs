@@ -34,7 +34,7 @@ namespace SW.HttpExtensions
         {
             var user = requestContext.User;
 
-            if (jwt == null)
+            if (user != null && jwt == null)
                 jwt = options.Token.WriteJwt((ClaimsIdentity)user.Identity);
 
             if (jwt != null)

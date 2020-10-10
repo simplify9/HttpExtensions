@@ -9,16 +9,19 @@ namespace SW.HttpExtensions
 {
     public static class JwtTokenParametersExtensions
     {
-        public static string WriteJwt(this JwtTokenParameters jwtTokenParameters, ClaimsIdentity claimsIdentity)
+        private readonly static TimeSpan defaultExpiry = TimeSpan.FromDays(7);
+
+        public static string WriteJwt(this JwtTokenParameters jwtTokenParameters, ClaimsIdentity claimsIdentity, TimeSpan? expires = null)
         {
             if (!jwtTokenParameters.IsValid) return null;
 
             var td = new SecurityTokenDescriptor
             {
                 Subject = claimsIdentity,
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = expires == null ? DateTime.UtcNow.Add(defaultExpiry) : DateTime.UtcNow.Add(expires.Value),
                 Issuer = jwtTokenParameters.Issuer,
                 Audience = jwtTokenParameters.Audience,
+
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenParameters.Key)), SecurityAlgorithms.HmacSha256Signature)
             };
 

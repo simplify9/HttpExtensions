@@ -16,14 +16,14 @@ namespace SW.HttpExtensions
             return jwtTokenParameters.WriteJwt(claimsIdentity, defaultExpiry);
         }
 
-        public static string WriteJwt(this JwtTokenParameters jwtTokenParameters, ClaimsIdentity claimsIdentity, TimeSpan? expires)
+        public static string WriteJwt(this JwtTokenParameters jwtTokenParameters, ClaimsIdentity claimsIdentity, TimeSpan expires)
         {
             if (!jwtTokenParameters.IsValid) return null;
 
             var td = new SecurityTokenDescriptor
             {
                 Subject = claimsIdentity,
-                Expires = expires == null ? DateTime.UtcNow.Add(defaultExpiry) : DateTime.UtcNow.Add(expires.Value),
+                Expires = DateTime.UtcNow.Add(expires),
                 Issuer = jwtTokenParameters.Issuer,
                 Audience = jwtTokenParameters.Audience,
 

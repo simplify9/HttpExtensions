@@ -52,6 +52,14 @@ namespace SW.HttpExtensions
             return this;
         }
 
+        public ApiOperationBuilder<TApiClientOptions> JwtOrKey(ApiKeyParameters apiKeyParameters = null)
+        {
+            var jwt = Jwt();
+            if (jwt != null) return this;
+
+            return Key(apiKeyParameters);
+        }
+
         public ApiOperationBuilder<TApiClientOptions> Header(string name, string value)
         {
             httpClient.DefaultRequestHeaders.Add(name, value);

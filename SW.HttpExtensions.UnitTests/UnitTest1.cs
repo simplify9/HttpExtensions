@@ -129,6 +129,8 @@ namespace SW.HttpExtensions.UnitTests
             );
             apiOperationBuilder.JwtOrKey(testOptions.ApiKey);
             Assert.IsTrue(httpClient.DefaultRequestHeaders.Contains(testOptions.ApiKey.Name));
+            Assert.IsNull(httpClient.DefaultRequestHeaders.Authorization);
+
         }
         [TestMethod]
         public void TestJwtOrKeyWhenJwtAvailable()
@@ -158,6 +160,8 @@ namespace SW.HttpExtensions.UnitTests
             requestContext.Set(new ClaimsPrincipal(claimsIdentity));
             apiOperationBuilder.JwtOrKey(testOptions.ApiKey);
             Assert.IsTrue(httpClient.DefaultRequestHeaders.Authorization.Scheme.Contains("Bearer"));
+            Assert.IsFalse(httpClient.DefaultRequestHeaders.Contains(testOptions.ApiKey.Name));
+
         }
 
         [TestMethod]

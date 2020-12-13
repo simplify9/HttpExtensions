@@ -54,9 +54,8 @@ namespace SW.HttpExtensions
 
         public ApiOperationBuilder<TApiClientOptions> JwtOrKey(ApiKeyParameters apiKeyParameters = null)
         {
-            var jwt = Jwt();
-            if (httpClient.DefaultRequestHeaders.Authorization!= null
-                && httpClient.DefaultRequestHeaders.Authorization.Scheme.Equals("Bearer")) return this;
+            var user = requestContext.User;
+            if (user != null) return Jwt();
 
             return Key(apiKeyParameters);
         }

@@ -2,18 +2,26 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using SW.PrimitiveTypes;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
+using System.Transactions;
 
 namespace SW.HttpExtensions.UnitTests
 {
     [TestClass]
     public class UnitTest1
     {
+        private class TestOptions : ApiClientOptionsBase
+        {
+            public override string ConfigurationSection => throw new System.NotImplementedException();
+        }
 
         private class TestInstance
         {
@@ -94,6 +102,66 @@ namespace SW.HttpExtensions.UnitTests
             var jwt = jwtTokenParameters.WriteJwt(claimsIdentity);
 
             var claimsPrincipal = jwtTokenParameters.ReadJwt(jwt);
+        }
+
+        [TestMethod]
+        public void TestJwtOrKeyWhenJwtUnAvailable()
+        {
+          
+            HttpClient httpClient = new HttpClient();
+            RequestContext requestContext = new RequestContext();
+            var testOptions = new TestOptions();
+            testOptions.ApiKey = new ApiKeyParameters
+            {
+                Value = "12312321"
+            };
+            testOptions.Token = new JwtTokenParameters
+            {
+                Audience = "local",
+                Issuer = "local",
+                Key = "8768747658765975758758758746"
+            };
+            var apiOperationBuilder = new ApiOperationBuilder<TestOptions>
+            (
+                httpClient,
+                requestContext,
+                testOptions
+            );
+            apiOperationBuilder.JwtOrKey(testOptions.ApiKey);
+            Assert.IsTrue(httpClient.DefaultRequestHeaders.Contains(testOptions.ApiKey.Name));
+            Assert.IsNull(httpClient.DefaultRequestHeaders.Authorization);
+
+        }
+        [TestMethod]
+        public void TestJwtOrKeyWhenJwtAvailable()
+        {
+
+            HttpClient httpClient = new HttpClient();
+            RequestContext requestContext = new RequestContext();
+            var testOptions = new TestOptions();
+            testOptions.ApiKey = new ApiKeyParameters
+            {
+                Value = "12312321"
+            };
+            testOptions.Token = new JwtTokenParameters
+            {
+                Audience = "local",
+                Issuer = "local",
+                Key = "8768747658765975758758758746"
+            };
+            var apiOperationBuilder = new ApiOperationBuilder<TestOptions>
+            (
+                httpClient,
+                requestContext,
+                testOptions
+            );
+            var claimsIdentity = new ClaimsIdentity("testauth");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, "111"));
+            requestContext.Set(new ClaimsPrincipal(claimsIdentity));
+            apiOperationBuilder.JwtOrKey(testOptions.ApiKey);
+            Assert.IsTrue(httpClient.DefaultRequestHeaders.Authorization.Scheme.Contains("Bearer"));
+            Assert.IsFalse(httpClient.DefaultRequestHeaders.Contains(testOptions.ApiKey.Name));
+
         }
 
         [TestMethod]

@@ -54,8 +54,8 @@ namespace SW.HttpExtensions
 
         public ApiOperationBuilder<TApiClientOptions> JwtOrKey(ApiKeyParameters apiKeyParameters = null)
         {
-            var jwt = Jwt();
-            if (jwt != null) return this;
+            var user = requestContext.User;
+            if (user != null) return Jwt();
 
             return Key(apiKeyParameters);
         }

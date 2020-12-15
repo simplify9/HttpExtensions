@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SW.PrimitiveTypes;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace SW.HttpExtensions
@@ -26,6 +28,8 @@ namespace SW.HttpExtensions
                     vals.Add(new RequestValue(q.Key, string.Join(";", q.Value.ToArray()), RequestValueType.QueryParameter));
 
                 httpContext.Request.Headers.TryGetValue(RequestContext.CorrelationIdHeaderName, out var cid);
+
+                requestContext.SetLocale(CultureInfo.CurrentCulture.Name);
 
                 requestContext.Set(httpContext.User, vals, cid.FirstOrDefault());
 

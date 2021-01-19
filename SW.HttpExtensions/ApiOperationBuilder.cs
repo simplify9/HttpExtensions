@@ -48,7 +48,9 @@ namespace SW.HttpExtensions
             if (apiKeyParameters == null)
                 apiKeyParameters = options.ApiKey;
 
-            httpClient.DefaultRequestHeaders.Add(apiKeyParameters.Name, apiKeyParameters.Value);
+            if (!httpClient.DefaultRequestHeaders.Contains(apiKeyParameters.Name))
+                httpClient.DefaultRequestHeaders.Add(apiKeyParameters.Name, apiKeyParameters.Value);
+            
             return this;
         }
 

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29721.120
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SW.HttpExtensions", "SW.HttpExtensions\SW.HttpExtensions.csproj", "{1CB5528F-3B81-4B9D-AA42-F9AB131E988F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SW.HttpExtensions.UnitTests", "SW.HttpExtensions.UnitTests\SW.HttpExtensions.UnitTests.csproj", "{335675E3-8CCE-4FA9-ADDE-35FFA26C2FAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SW.HttpExtensions.UnitTests", "SW.HttpExtensions.UnitTests\SW.HttpExtensions.UnitTests.csproj", "{335675E3-8CCE-4FA9-ADDE-35FFA26C2FAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

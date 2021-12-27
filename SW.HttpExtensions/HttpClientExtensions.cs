@@ -21,6 +21,19 @@ namespace SW.HttpExtensions
             }
         }
 
+        public static Task<HttpResponseMessage> PutAsync(this HttpClient client, string url, object payload)
+        {
+            var payloadStr = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            try
+            {
+                return client.PutAsync(url, payloadStr);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error connecting to: {client.BaseAddress}", ex);
+            }
+        }
+
         async public static Task<TResult> PostAsync<TResult>(this HttpClient client, string url, object payload)
         {
             var httpResponseMessage = await client.PostAsync(url, payload);
@@ -40,7 +53,7 @@ namespace SW.HttpExtensions
             if (payload == null)
                 return new StringContent(string.Empty, Encoding.UTF8, "application/json");
             else if (payload is HttpContent)
-                return (HttpContent)payload;
+                return (HttpContent) payload;
             else if (payload.GetType() == typeof(string) || payload.GetType().IsPrimitive)
                 return new StringContent(payload.ToString(), Encoding.UTF8, "application/json");
             else

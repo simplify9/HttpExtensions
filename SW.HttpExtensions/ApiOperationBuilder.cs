@@ -43,6 +43,21 @@ namespace SW.HttpExtensions
             return this;
         }
 
+        public ApiOperationBuilder<TApiClientOptions> JwtOnBehalf(string jwt = null)
+        {
+            var user = requestContext.User;
+            var userClaimsIdentity = (ClaimsIdentity)user?.Identity;
+            userClaimsIdentity?.AddClaim(new Claim(ClaimTypes.Actor, JwtTokenParameters.MicroService));
+
+            if (user != null && jwt == null)
+                jwt = options.Token.WriteJwt(userClaimsIdentity);
+
+            if (jwt != null)
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+
+            return this;
+        }
+
         public ApiOperationBuilder<TApiClientOptions> Key(ApiKeyParameters apiKeyParameters = null)
         {
             if (apiKeyParameters == null)
@@ -50,7 +65,7 @@ namespace SW.HttpExtensions
 
             if (!httpClient.DefaultRequestHeaders.Contains(apiKeyParameters.Name))
                 httpClient.DefaultRequestHeaders.Add(apiKeyParameters.Name, apiKeyParameters.Value);
-            
+
             return this;
         }
 
@@ -104,8 +119,10 @@ namespace SW.HttpExtensions
 
         public ApiOperationRunnerTyped<TResponse> As<TResponse>(bool throwOnFailure = true)
             => new ApiOperationRunnerTyped<TResponse>(httpClient, path, throwOnFailure);
+
         public ApiOperationRunnerWrapped<TResponse> AsApiResult<TResponse>()
             => new ApiOperationRunnerWrapped<TResponse>(httpClient, path);
+
         public ApiOperationRunnerWrapped AsApiResult()
             => new ApiOperationRunnerWrapped(httpClient, path);
     }

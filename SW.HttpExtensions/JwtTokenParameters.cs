@@ -6,13 +6,13 @@ namespace SW.HttpExtensions
 {
     public class JwtTokenParameters
     {
-
         public const string ConfigurationSection = "Token";
+        internal const string MicroService = "micro-service";
         public string Issuer { get; set; }
         public string Key { get; set; }
         public string Audience { get; set; }
 
-        public bool IsValid 
+        public bool IsValid
         {
             get
             {

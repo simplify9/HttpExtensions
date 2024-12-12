@@ -1,30 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <PackageId>SimplyWorks.HttpExtensions</PackageId>
-    <Authors>Simplify9</Authors>
-    <Product>SimplyWorks.HttpExtensions</Product>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>icon.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/simplify9/HttpExtensions</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/simplify9/HttpExtensions</RepositoryUrl>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <PackageId>SimplyWorks.HttpExtensions</PackageId>
+        <Authors>Simplify9</Authors>
+        <Product>SimplyWorks.HttpExtensions</Product>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageProjectUrl>https://github.com/simplify9/HttpExtensions</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/simplify9/HttpExtensions</RepositoryUrl>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="SimplyWorks.PrimitiveTypes" Version="6.1.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="SimplyWorks.PrimitiveTypes" Version="6.0.5"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\icon.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
 
 </Project>

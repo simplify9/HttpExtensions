@@ -11,16 +11,36 @@ namespace SW.HttpExtensions
         public static string ToQueryString(this object obj)
         {
             string[] props = obj.GetType().GetProperties()
+                .Where(property =>
+                {
+                    if (property.GetValue(obj) == null)
+                        return false;
+
+                    bool isEnumerable = property.PropertyType.GetInterface(nameof(IEnumerable)) != null &&
+                                        property.PropertyType != typeof(string);
+
+                    if (!isEnumerable)
+                        return true;
+                    
+                    IEnumerable tmp = ((IEnumerable)property.GetValue(obj).ConvertValueToType(property.PropertyType));
+                    IEnumerable<string> enumerable = tmp.Cast<string>();
+
+                    return enumerable.Any();
+
+                })
                 .Select(property =>
                 {
+                    bool isEnumerable = property.PropertyType.GetInterface(nameof(IEnumerable)) != null &&
+                                        property.PropertyType != typeof(string);
 
-                    bool isEnumerable = property.PropertyType.GetInterface(nameof(IEnumerable)) != null && property.PropertyType != typeof(string);
                     if (isEnumerable)
-                    {
-                        IEnumerable tmp = ((IEnumerable)property.GetValue(obj).ConvertValueToType(property.PropertyType));
-                        IEnumerable<string> enumerable = tmp.Cast<string>();
 
-                        Type nested = property.PropertyType.GetElementType() ?? property.PropertyType.GetGenericArguments()[0];
+                    {
+                        IEnumerable tmp =
+                            ((IEnumerable)property.GetValue(obj).ConvertValueToType(property.PropertyType));
+
+                        Type nested = property.PropertyType.GetElementType() ??
+                                      property.PropertyType.GetGenericArguments()[0];
 
                         int length = 0;
                         foreach (var val in tmp) ++length;
@@ -35,7 +55,9 @@ namespace SW.HttpExtensions
                         }
 
                         string q = string.Empty;
-                        for (int i = 0; i < array.Length - 1; i++) 
+
+                       
+                        for (var i = 0; i < array.Length - 1; i++)
                             q += $"{property.Name}={array.GetValue(i)}&";
                         q += $"{property.Name}={array.GetValue(array.Length - 1)}";
 
@@ -47,7 +69,6 @@ namespace SW.HttpExtensions
                         if (value == null) return string.Empty;
                         else return $"{property.Name}={property.GetValue(obj)}";
                     }
-                        
                 })
                 .ToArray();
 

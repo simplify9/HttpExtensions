@@ -90,7 +90,7 @@ namespace SW.HttpExtensions.UnitTests
         [TestMethod]
         public void TestReadWriteJwt()
         {
-            
+             
             var jwtTokenParameters = new JwtTokenParameters
             {
                 Audience = "local",

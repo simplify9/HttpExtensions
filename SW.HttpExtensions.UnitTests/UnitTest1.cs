@@ -90,11 +90,12 @@ namespace SW.HttpExtensions.UnitTests
         [TestMethod]
         public void TestReadWriteJwt()
         {
+             
             var jwtTokenParameters = new JwtTokenParameters
             {
                 Audience = "local",
                 Issuer = "local",
-                Key = "8768747658765975758758758746"
+                Key = "87687476587659757587587587468768747658765975758758758746"
             };
 
             var claimsIdentity = new ClaimsIdentity("testauth");

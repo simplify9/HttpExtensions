@@ -95,7 +95,7 @@ namespace SW.HttpExtensions.UnitTests
             {
                 Audience = "local",
                 Issuer = "local",
-                Key = "87687476587659757587587587468768747658765975758758758746"
+                Key = "8768747658765975758758758746876874765876597575875875874687687476587659757587587587468768747658765975758758758746"
             };
 
             var claimsIdentity = new ClaimsIdentity("testauth");
@@ -148,7 +148,7 @@ namespace SW.HttpExtensions.UnitTests
             {
                 Audience = "local",
                 Issuer = "local",
-                Key = "8768747658765975758758758746"
+                Key = "87687476587659757587587587468768747658765975758758758746"
             };
             var apiOperationBuilder = new ApiOperationBuilder<TestOptions>
             (

@@ -94,7 +94,7 @@ namespace SW.HttpExtensions.UnitTests
             {
                 Audience = "local",
                 Issuer = "local",
-                Key = "8768747658765975758758758746"
+                Key = "87687476587659757587587587468768747658765975758758758746"
             };
 
             var claimsIdentity = new ClaimsIdentity("testauth");
